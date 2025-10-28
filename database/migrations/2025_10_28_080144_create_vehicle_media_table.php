@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('vehicle_media', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('vehicle_id');
+            $table->string('vehicle_id')->unique();
             $table->string('media_type');
             $table->string('media_url');
             $table->text('description')->nullable();
