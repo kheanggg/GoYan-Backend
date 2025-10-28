@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
             ShopSeeder::class,
             VehicleTypeSeeder::class,
             VehicleSeeder::class,
+            VehicleMediaSeeder::class,
         ]);
     }
 }
