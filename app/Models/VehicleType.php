@@ -12,4 +12,9 @@ class VehicleType extends Model
     protected $keyType = 'string';
 
     protected $fillable = ['vehicle_type_id', 'vehicle_type_name'];
+
+    public function vehicles()
+    {
+        return $this->hasMany(Vehicle::class, 'vehicle_type_id', 'vehicle_type_id');
+    }
 }

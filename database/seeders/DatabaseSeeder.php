@@ -22,6 +22,11 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
         ]);
 
-        $this->call(LocationSeeder::class);
+        $this->call([
+            LocationSeeder::class,
+            ShopSeeder::class,
+            VehicleTypeSeeder::class,
+            VehicleSeeder::class,
+        ]);
     }
 }
