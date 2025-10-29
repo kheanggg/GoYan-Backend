@@ -3,11 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\VehicleMedia;
+use App\Models\VehicleType;
+use App\Models\Shop;
 
 class Vehicle extends Model
 {
     protected $table = 'vehicles';
-    protected $primaryKey = 'shop_id';
+    protected $primaryKey = 'vehicle_id';
     public $incrementing = false;
     protected $keyType = 'string';
 
@@ -26,7 +29,7 @@ class Vehicle extends Model
 
     public function media()
     {
-        return $this->hasMany(VehicleMedia::class);
+        return $this->hasMany(VehicleMedia::class, 'vehicle_id', 'vehicle_id');
     }
 
     public function vehicleType()
