@@ -13,3 +13,4 @@ Route::get('/vehicletypes', [VehicleTypeController::class, 'index']);
 
 // Vehicles
 Route::get('/vehicles', [VehicleController::class, 'index']);
+Route::get('/vehicles/{id}', [VehicleController::class, 'show']);

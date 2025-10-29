@@ -134,4 +134,62 @@ class VehicleController extends Controller
             ], 500);
         }
     }
+
+    public function show($id)
+    {
+        try {
+            $vehicle = Vehicle::with(['shop', 'media'])->findOrFail($id);
+
+            // safe accessors
+            $shop = $vehicle->shop ?? null;
+            $firstMedia = ($vehicle->media && $vehicle->media->count()) ? $vehicle->media->first() : null;
+
+            $imageUrl = $firstMedia
+                ? asset(ltrim($firstMedia->media_url, '/'))
+                : asset('images/default-vehicle.png');
+
+            $data = [
+                'id' => $vehicle->vehicle_id ?? null,
+                'name' => $vehicle->vehicle_name ?? null,
+                'type' => $vehicle->vehicle_type_id ?? null,
+                'brand' => $vehicle->brand ?? null,
+                'model' => $vehicle->model ?? null,
+                'year' => is_numeric($vehicle->year) ? (int) $vehicle->year : null,
+                'color' => $vehicle->color ?? null,
+                'rental_price_per_day' => is_numeric($vehicle->rental_price_per_day) ? (float) $vehicle->rental_price_per_day : null,
+                'currency' => $vehicle->currency ?? 'USD',
+                'description' => $vehicle->description ?? null,
+                'available' => true, // For demo, always true
+                'shop' => $shop ? [
+                    'id' => $shop->shop_id ?? null,
+                    'name' => $shop->shop_name ?? null,
+                    'location' => $shop->location_id ?? null,
+                    'address' => $shop->address ?? null,
+                    'phone_number' => $shop->phone_number ?? null,
+                ] : null,
+                'media' => [
+                    [
+                        'type' => $firstMedia->media_type ?? 'image',
+                        'url' => $imageUrl,
+                    ]
+                ]
+            ];
+
+            return response()->json([
+                'success' => true,
+                'data' => $data,
+                'errors' => null,
+            ], 200);
+
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'success' => false,
+                'data' => null,
+                'errors' => [
+                    'code' => 'NOT_FOUND',
+                    'message' => 'Vehicle not found.'
+                ],
+            ], 404);
+        }
+    }
 }
