@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\VehicleTypeController;
 use App\Http\Controllers\Api\VehicleController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\TelegramController;
+use App\Http\Controllers\Api\BookingController;
 
 // Locations
 Route::get('/locations', [LocationController::class, 'index']);
@@ -22,3 +23,6 @@ Route::get('/users/{telegramId}', [UserController::class, 'show']);
 
 // Telegram webhook routes
 Route::post('/telegram/webhook', [TelegramController::class, 'handle']);
+
+// Booking notifications
+Route::post('/booking/notify', [BookingController::class, 'sendBookingNotification']);
