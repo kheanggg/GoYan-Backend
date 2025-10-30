@@ -18,9 +18,15 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
         'email',
         'password',
+        'telegram_id',
+        'chat_id',
+        'username',
+        'first_name',
+        'last_name',
+        'phone_number',
+        'role',
     ];
 
     /**
@@ -44,5 +50,10 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function displayName(): string
+    {
+        return $this->username ?? ($this->first_name . ' ' . $this->last_name);
     }
 }
