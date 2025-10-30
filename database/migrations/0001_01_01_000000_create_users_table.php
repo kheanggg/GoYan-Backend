@@ -13,11 +13,15 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
+            $table->string('email')->unique()->nullable(); // for admins
+            $table->string('password')->nullable();        // for admins
+            $table->bigInteger('telegram_id')->nullable()->unique()->index();
+            $table->bigInteger('chat_id')->nullable()->unique()->index();
+            $table->string('username')->nullable();
+            $table->string('first_name')->nullable();
+            $table->string('last_name')->nullable();
+            $table->string('phone_number')->nullable();
+            $table->enum('role', ['admin', 'telegram'])->default('telegram');
             $table->timestamps();
         });
 
