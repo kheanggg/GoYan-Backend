@@ -38,12 +38,12 @@ class VehicleMediaSeeder extends Seeder
         $mediaData = [];
 
         foreach ($vehicles as $v) {
-            // Convert name to URL-safe version
-            $fileName = str_replace(' ', '%20', $v['vehicle_name']);
+            // Replace spaces with + instead of %20
+            $fileName = str_replace(' ', '+', $v['vehicle_name']);
             $mediaData[] = [
                 'vehicle_id' => $v['vehicle_id'],
                 'media_type' => 'image',
-                'media_url' => "/images/vehicles/{$v['vehicle_type']}/{$fileName}.png",
+                'media_url' => "/vehicles/{$v['vehicle_type']}/{$fileName}.png",
                 'created_at' => now(),
                 'updated_at' => now(),
             ];

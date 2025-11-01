@@ -17,6 +17,7 @@ class VehicleController extends Controller
      * - type: e.g. "bicycle" or "motorcycle"
      * - per_page: pagination limit
      */
+
     public function index(Request $request)
     {
         try {
@@ -44,6 +45,7 @@ class VehicleController extends Controller
 
             // paginate results
             $vehicles = $query->paginate($perPage)->appends($request->query());
+            
 
             // map the underlying collection safely
             $mapped = $vehicles->getCollection()->map(function ($v) {
@@ -51,9 +53,13 @@ class VehicleController extends Controller
                 $shop = $v->shop ?? null;
                 $firstMedia = ($v->media && $v->media->count()) ? $v->media->first() : null;
 
+                $S3_BASE_URL = rtrim(env('S3_BASE_URL'), '/');
+
                 $imageUrl = $firstMedia
-                    ? asset(ltrim($firstMedia->media_url, '/'))
-                    : asset('images/default-vehicle.png');
+                    ? (filter_var($firstMedia->media_url, FILTER_VALIDATE_URL) 
+                        ? $firstMedia->media_url 
+                        : $S3_BASE_URL . '/' . ltrim($firstMedia->media_url, '/'))
+                    : rtrim(env('APP_URL'), '/') . '/images/default-vehicle.png';
 
                 return [
                     'id' => $v->vehicle_id ?? null,
@@ -144,9 +150,13 @@ class VehicleController extends Controller
             $shop = $vehicle->shop ?? null;
             $firstMedia = ($vehicle->media && $vehicle->media->count()) ? $vehicle->media->first() : null;
 
-            $imageUrl = $firstMedia
-                ? asset(ltrim($firstMedia->media_url, '/'))
-                : asset('images/default-vehicle.png');
+            $S3_BASE_URL = rtrim(env('S3_BASE_URL'), '/');
+
+                $imageUrl = $firstMedia
+                    ? (filter_var($firstMedia->media_url, FILTER_VALIDATE_URL) 
+                        ? $firstMedia->media_url 
+                        : $S3_BASE_URL . '/' . ltrim($firstMedia->media_url, '/'))
+                    : rtrim(env('APP_URL'), '/') . '/images/default-vehicle.png';
 
             $data = [
                 'id' => $vehicle->vehicle_id ?? null,

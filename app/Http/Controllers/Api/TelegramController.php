@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 
 class TelegramController extends Controller
 {
@@ -50,7 +51,7 @@ class TelegramController extends Controller
 
             // Handle contact sharing
             if (isset($message['contact'])) {
-                $this->handleContactSharing($message['contact'], $chatId);
+                $this->handleContactSharing($message);
                 return response()->json(['status' => 'success']);
             }
         }
@@ -97,15 +98,20 @@ class TelegramController extends Controller
         $this->sendContactKeyboard($chatId, "📱 To get started, please share your phone number so we can confirm your bookings and contact you if needed.");
     }
 
-    private function handleContactSharing($contact, $chatId)
+    private function handleContactSharing($message)
     {
+        $chatId = $message['chat']['id'] ?? null;
+        $contact = $message['contact'] ?? [];
+        $from = $message['from'] ?? [];
+
         \Log::info('Telegram contact data:', $contact);
+        \Log::info('Telegram from data:', $from);
 
         $userData = [
-            'telegram_id' => $contact['user_id'] ?? $chatId,
-            'username' => $contact['username'] ?? null,
-            'first_name' => $contact['first_name'] ?? null,
-            'last_name' => $contact['last_name'] ?? null,
+            'telegram_id' => $contact['user_id'] ?? $from['id'] ?? $chatId,
+            'username' => $from['username'] ?? null, // get username from sender
+            'first_name' => $contact['first_name'] ?? $from['first_name'] ?? null,
+            'last_name' => $contact['last_name'] ?? $from['last_name'] ?? null,
             'chat_id' => $chatId,
             'phone_number' => $contact['phone_number'] ?? null,
         ];
@@ -116,6 +122,7 @@ class TelegramController extends Controller
 
         $this->handleRentNowCommand($chatId);
     }
+
 
     private function handleRentNowCommand($chatId)
     {
@@ -178,7 +185,7 @@ class TelegramController extends Controller
             'username' => $user['username'] ?? null,
             'first_name' => $user['first_name'] ?? null,
             'last_name' => $user['last_name'] ?? null,
-            'chat_id' => $chatId,
+            'chat_id' => $user['id'] ?? null,
             'user' => $user
         ];
     }
